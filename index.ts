@@ -6,6 +6,9 @@ import {
     Service
 } from 'hydrooj';
 import { htmlToOJMarkdown } from './src/zjHtmlToMarkdown';
+import { STATUS } from '@hydrooj/common';
+import { CopyInFile, runQueued } from '@hydrooj/hydrojudge/src/sandbox';
+import checkers from '@hydrooj/hydrojudge/src/checkers';
 
 // define ZJson Schema
 const ZJsonSchema = Schema.object({
@@ -28,10 +31,12 @@ const ZJsonSchema = Schema.object({
     language: Schema.string(),
     specialjudge_code: Schema.string(),
     specialjudge_language: Schema.any(),
+    judgemode: Schema.string(),
 });
 
 class ImportZerojudgeHandler extends Handler {
     static zjUrl?: string; // fix: ? added, camelCase
+    static zjCheckerType ?: string;
     async processZJson(domainId: string, rawData: any) {
         let data;
         try {
@@ -117,6 +122,13 @@ class ImportZerojudgeHandler extends Handler {
             const lang_suffix = data.specialjudge_language.suffix ?? '';
             const checker_filename = `checker.${lang_suffix}`;
             tasks.push(ProblemModel.addTestdata(domainId, pid, checker_filename, Buffer.from(spj_code ?? '')));
+            if (data.judgemode === 'Special' && this.zjCheckerType) {
+                config.checker_type = this.zjCheckerType;
+                config.checker = {
+                    file: checker_filename,
+                    lang: 'auto',
+                };
+            }
         }
         if (data.samplecode) {
             const sample_code = data.samplecode;
@@ -214,9 +226,57 @@ class ImportZerojudgeHandler extends Handler {
     }
 }
 
+async function zerojudgeChecker(config) {
+    const { stdout, status, code } = await runQueued(`${config.execute} input answer user_out user_code`, {
+        copyIn: {
+            input: config.input,
+            answer: config.output,
+            user_out: config.user_stdout,
+            user_code: config.code,
+            ...config.copyIn,
+        },
+        env: config.env,
+    });
+    if (status !== STATUS.STATUS_ACCEPTED) {
+        return {
+            status: STATUS.STATUS_SYSTEM_ERROR,
+            score: 0,
+            message: 'Checker Error',
+        };
+    }
+    if (code !== 0) {
+        return {
+            status: STATUS.STATUS_SYSTEM_ERROR,
+            score: 0,
+            message: 'Checker returned non-zero exit code.',
+        };
+    }
+    let judge_result = STATUS.STATUS_SYSTEM_ERROR;
+    let message = '';
+    for (const line of stdout.split('\n')) {
+        if (line.startsWith('$JUDGE_RESULT=')) {
+            const result = line.slice(14);
+            if (result === 'AC') {
+                judge_result = STATUS.STATUS_ACCEPTED;
+            } else if (result === 'WA' || result === 'OLE') {
+                judge_result = STATUS.STATUS_WRONG_ANSWER;
+            }
+            break;
+        } else if (config.detail === 'full' && line.startsWith('$MESSAGE=')) {
+            message = line.slice(9);
+        }
+    }
+    return {
+        status: judge_result,
+        score: judge_result === STATUS.STATUS_ACCEPTED ? config.score : 0,
+        message: judge_result === STATUS.STATUS_SYSTEM_ERROR ? 'Invalid judge result returned from the checker.' : '',
+    };
+}
+
 export default class ImportJsonService extends Service {
     static Config = Schema.object({
     ZjBaseUrl: Schema.string().description('Author Statistic Base URL'),
+    zjCheckerType: Schema.string().description('Zerojudge Checker Type Name'),
     });
     constructor(ctx: Context, config: ReturnType<typeof ImportJsonService.Config>) {
         super(ctx, 'import-json-service');
@@ -228,6 +288,10 @@ export default class ImportJsonService extends Service {
             'Example: https://dandanjudge.fdhs.tyc.edu.tw/UserStatistic': '例如: https://dandanjudge.fdhs.tyc.edu.tw/UserStatistic (留空則不嵌入連結)',
         });
         ImportZerojudgeHandler.zjUrl = config.ZjBaseUrl;
+        ImportZerojudgeHandler.zjCheckerType = config.zjCheckerType;
+        if (config.zjCheckerType) {
+            checkers[config.zjCheckerType] = zerojudgeChecker;
+        }
     }
 }
 
