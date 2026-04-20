@@ -1,4 +1,4 @@
-# zj-to-hydrooj
+# zj-to-hydro
 
 A tool designed to convert problem data from ZeroJudge (ZJSON) format to HydroOJ compatible format. It simplifies the migration process by automatically handling complex formatting and LaTeX expressions.
 
@@ -7,7 +7,8 @@ A tool designed to convert problem data from ZeroJudge (ZJSON) format to HydroOJ
 You can install the package via npm by running the following command in your terminal:
 
 ```bash
-npm i zj-to-hydrooj
+yarn global add @ddj-v2/zj-to-hydro
+hydrooj addon add @ddj-v2/zj-to-hydro
 ```
 
 ## Features

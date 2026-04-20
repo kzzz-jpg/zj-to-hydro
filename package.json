@@ -1,14 +1,14 @@
 {
-  "name": "zj-to-hydro",
+  "name": "@ddj-v2/zj-to-hydro",
   "version": "0.0.1",
-  "description": "dandanjudge v1 to v2 transfer tool",
+  "description": "dandanjudge v1 (base on zerojudge) to v2 (base on hydroOJ) transfer tool",
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Miyun-owo/zj-to-hydro.git"
+    "url": "git+https://github.com/ddj-v2/zj-to-hydro.git"
   },
   "keywords": [],
   "author": "Miyun-owo",
@@ -18,21 +18,25 @@
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/Miyun-owo/zj-to-hydro/issues"
+    "url": "https://github.com/ddj-v2/zj-to-hydro/issues"
   },
-  "homepage": "https://github.com/Miyun-owo/zj-to-hydro#readme",
+  "homepage": "https://github.com/ddj-v2/zj-to-hydro#readme",
   "dependencies": {
     "adm-zip": "^0.5.16",
-    "hydrooj": "^5.0.0-beta.17",
     "js-yaml": "^4.1.1",
     "jsdom": "^27.4.0",
     "jszip": "^3.10.1"
   },
   "devDependencies": {
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.0",
     "@types/adm-zip": "^0.5.7",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^25.0.9",
     "node-pandoc": "^0.3.0",
+    "semantic-release": "^25.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
