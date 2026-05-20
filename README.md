@@ -1,4 +1,4 @@
-# zj-to-hydro
+# @ddj-v2/zj-to-hydro
 
 A tool designed to convert problem data from ZeroJudge (ZJSON) format to HydroOJ compatible format. It simplifies the migration process by automatically handling complex formatting and LaTeX expressions.
 
@@ -41,7 +41,7 @@ Contributions are what make the open-source community an amazing place to learn,
 * **Report Bugs**: If you find a bug, please open an issue on GitHub.
 * **Feature Requests**: Have an idea to make this tool better? Feel free to open an issue or submit a Pull Request.
 
-**GitHub Repository**: [https://github.com/Miyun-owo/zj-to-hydro](https://github.com/Miyun-owo/zj-to-hydro)
+**GitHub Repository**: [https://github.com/ddj-v2/zj-to-hydro](https://github.com/ddj-v2/zj-to-hydro)
 
 ## License
 
