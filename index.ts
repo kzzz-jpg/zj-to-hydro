@@ -282,7 +282,8 @@ export default class ImportJsonService extends Service {
         super(ctx, 'import-json-service');
         ctx.Route('problem_import_json', '/problem/import/json', ImportZerojudgeHandler, PERM.PERM_CREATE_PROBLEM);
         ctx.injectUI('ProblemAdd', 'problem_import_json', { icon: 'copy', text: 'From JSON/ZIP Export' });
-        ctx.i18n.load('zh', {
+        ctx.i18n.load('zh_TW', {
+            config.zjCheckerType: 'ZeroJudge',
             'From JSON/ZIP Export': '從 JSON/ZIP 導入 (ZJSON)',
             'Author Statistic Base URL': '作者統計頁面基準網址',
             'Example: https://dandanjudge.fdhs.tyc.edu.tw/UserStatistic': '例如: https://dandanjudge.fdhs.tyc.edu.tw/UserStatistic (留空則不嵌入連結)',
