@@ -276,7 +276,7 @@ async function zerojudgeChecker(config) {
 export default class ImportJsonService extends Service {
     static Config = Schema.object({
     ZjBaseUrl: Schema.string().description('Author Statistic Base URL'),
-    zjCheckerType: Schema.string().description('Zerojudge Checker Type Name'),
+    zjCheckerType: Schema.string().description('Zerojudge Checker Type Name').default("qduoj"),
     });
     constructor(ctx: Context, config: ReturnType<typeof ImportJsonService.Config>) {
         super(ctx, 'import-json-service');
