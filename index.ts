@@ -5,7 +5,7 @@ import {
     ProblemModel, Schema, ValidationError, yaml,
     Service
 } from 'hydrooj';
-import { htmlToOJMarkdown } from './src/zjHtmlToMarkdown';
+const htmlToOJMarkdown = await require('./src/zjHtmlToMarkdown');
 import { STATUS } from '@hydrooj/common';
 import { CopyInFile, runQueued } from '@hydrooj/hydrojudge/src/sandbox';
 import checkers from '@hydrooj/hydrojudge/src/checkers';
