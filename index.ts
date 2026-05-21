@@ -77,11 +77,26 @@ class ImportZerojudgeHandler extends Handler {
             }
         }
 
+        // Build samples from testinfiles/testoutfiles (multiple examples as separate code blocks)
+        const samples: string[][] = [];
+        if (data.testinfiles && data.testoutfiles) {
+            const count = Math.min(data.testinfiles.length, data.testoutfiles.length);
+            for (let i = 0; i < count; i++) {
+                const input = data.testinfiles[i] || '';
+                const output = data.testoutfiles[i] || '';
+                // Format each sample as separate code blocks
+                samples.push([`\`\`\`\n${input}\n\`\`\``, `\`\`\`\n${output}\n\`\`\``]);
+            }
+        } else if (data.sampleinput && data.sampleoutput) {
+            // Fallback to sampleinput/sampleoutput if testinfiles/testoutfiles not available
+            samples.push([`\`\`\`\n${data.sampleinput}\n\`\`\``, `\`\`\`\n${data.sampleoutput}\n\`\`\``]);
+        }
+
         const contentMarkdown = buildContent({
             description: descriptionMarkdown,
             input: await convertHtmlToMarkdown(data.theinput),
             output: await convertHtmlToMarkdown(data.theoutput),
-            samples: [[data.sampleinput, data.sampleoutput]],
+            samples,
             hint: await convertHtmlToMarkdown(data.hint),
         }, 'markdown');
         const tags = data.keywords ? (typeof data.keywords === 'string' ? JSON.parse(data.keywords) : data.keywords) : [];
